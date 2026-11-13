@@ -16,7 +16,7 @@ const noAdminsConfigured = env.PAINEL_ADMIN_IDS.length === 0 && env.PAINEL_ADMIN
 if (noAdminsConfigured) {
   console.warn(
     isProd
-      ? "[PMERJ] Nenhum admin configurado (PAINEL_ADMIN_IDS / PAINEL_ADMIN_ROLE_IDS): só a Equipe do painel administra."
+      ? "[PMERJ] Nenhum admin configurado (PAINEL_ADMIN_IDS / PAINEL_ADMIN_ROLE_IDS): desenvolvedores e Equipe do painel administram."
       : "[PMERJ] Nenhum admin configurado: em DEV todos os usuários do painel são admin.",
   );
 }
@@ -30,6 +30,7 @@ export const noModulo = <T>(modulo: string, fn: () => T): T => contexto.run({ mo
 
 /** Admin do .env (dono do sistema): sempre tudo. */
 export function isAdminEnv(session: Session): boolean {
+  if (env.DEVELOPER_DISCORD_IDS.includes(session.user.id)) return true;
   if (noAdminsConfigured) return !isProd;
   return env.PAINEL_ADMIN_IDS.includes(session.user.id) || session.roles.some((role) => env.PAINEL_ADMIN_ROLE_IDS.includes(role));
 }
