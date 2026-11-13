@@ -7,7 +7,7 @@ import { setCommandRoles } from "../discord/bot.js";
 import { alvoVisibilidade, voltaVisibilidade } from "../discord/visibilidade.js";
 import { env, isProd } from "../env.js";
 import { rateLimit } from "../security/rate-limit.js";
-import { isAdmin } from "./guards.js";
+import { isAdmin, temAcessoPainel } from "./guards.js";
 import { createSession, destroySession, getSession, type LoginContext } from "./sessions.js";
 
 /**
@@ -70,7 +70,7 @@ function safeEqual(a: string, b: string): boolean {
 }
 
 /** Redireciona com um código de erro conhecido (nunca repassa texto vindo de fora). */
-type LoginError = "cancelado" | "expirado" | "invalido" | "nao_membro" | "falha_discord";
+type LoginError = "cancelado" | "expirado" | "invalido" | "nao_membro" | "sem_acesso" | "falha_discord";
 const fail = (path: string, code: LoginError) => `${path}?erro=${code}`;
 
 export const authRoutes = new Hono();
@@ -205,8 +205,12 @@ authRoutes.get("/discord/callback", authLimiter, async (c) => {
     // Revoga o token do Discord: não precisamos mais dele.
     discord.revokeToken(tokens.accessToken()).catch(() => {});
 
-    if (login.context === "painel" && !isMember) {
+    const desenvolvedor = env.DEVELOPER_DISCORD_IDS.includes(user.id);
+    if (login.context === "painel" && !isMember && !desenvolvedor) {
       return c.redirect(fail(target.fail, "nao_membro"));
+    }
+    if (login.context === "painel" && !temAcessoPainel(user.id, roles)) {
+      return c.redirect(fail(target.fail, "sem_acesso"));
     }
 
     destroySession(c); // evita fixação de sessão

@@ -4,6 +4,7 @@ const MESSAGES: Record<string, string> = {
   expirado: 'O login expirou. Tente novamente.',
   invalido: 'Não foi possível validar o login. Tente novamente.',
   nao_membro: 'Sua conta do Discord não faz parte do servidor oficial da PMERJ.',
+  sem_acesso: 'Sua conta ainda não foi liberada para o painel. Peça a um administrador para adicioná-la à Equipe do painel.',
   falha_discord: 'O Discord não respondeu como esperado. Tente novamente em instantes.',
 }
 

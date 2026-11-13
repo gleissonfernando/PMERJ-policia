@@ -35,6 +35,17 @@ export function isAdminEnv(session: Session): boolean {
   return env.PAINEL_ADMIN_IDS.includes(session.user.id) || session.roles.some((role) => env.PAINEL_ADMIN_ROLE_IDS.includes(role));
 }
 
+/** Liberação para entrar no dashboard; estar no servidor, por si só, não basta em produção. */
+export function temAcessoPainel(userId: string, roles: string[]): boolean {
+  if (noAdminsConfigured && !isProd) return true;
+  return (
+    env.DEVELOPER_DISCORD_IDS.includes(userId) ||
+    env.PAINEL_ADMIN_IDS.includes(userId) ||
+    roles.some((role) => env.PAINEL_ADMIN_ROLE_IDS.includes(role)) ||
+    Boolean(equipeStore.membro(userId))
+  );
+}
+
 /** Pode gerenciar a Equipe (adicionar, trocar acesso, remover). */
 export function gerenciaEquipe(session: Session): boolean {
   return isAdminEnv(session) || equipeStore.membro(session.user.id)?.acesso === "admin";
@@ -69,7 +80,10 @@ type Env = { Variables: { session: Session } };
 export const requirePainel: MiddlewareHandler<Env> = async (c, next) => {
   const session = getSession(c);
   if (!session) return c.json({ error: "nao_autenticado" }, 401);
-  if (session.context !== "painel" || !session.guildMember) return c.json({ error: "proibido" }, 403);
+  const desenvolvedor = env.DEVELOPER_DISCORD_IDS.includes(session.user.id);
+  if (session.context !== "painel" || (!session.guildMember && !desenvolvedor) || !temAcessoPainel(session.user.id, session.roles)) {
+    return c.json({ error: "proibido" }, 403);
+  }
   c.set("session", session);
   await next();
 };
