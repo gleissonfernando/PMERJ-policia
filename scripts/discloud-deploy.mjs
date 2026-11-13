@@ -24,7 +24,8 @@ const config = Object.fromEntries(
     .map((l) => [l.slice(0, l.indexOf("=")).trim(), l.slice(l.indexOf("=") + 1).trim()]),
 );
 const appId = process.argv[2] || process.env.DISCLOUD_APP_ID || config.ID;
-const token = process.env.DISCLOUD_TOKEN || process.env.DISCLOUD_API_TOKEN;
+// Aceita tambÃ©m o nome usado no .env local legado ("Disclaud_token").
+const token = process.env.DISCLOUD_TOKEN || process.env.DISCLOUD_API_TOKEN || process.env.Disclaud_token;
 
 if (!token || token.length < 20) {
   console.error("[discloud] Coloque DISCLOUD_TOKEN no .env da raiz (Discloud → Dashboard → API) para fazer deploy.");
