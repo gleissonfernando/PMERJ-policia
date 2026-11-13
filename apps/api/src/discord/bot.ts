@@ -531,20 +531,26 @@ export function deleteAppEmoji(id: string): Promise<boolean> {
 /** ID de cada comando registrado (nome → id), para ajustar quem vê o comando. */
 const comandosRegistrados = new Map<string, string>();
 export const idDoComando = (nome: string) => comandosRegistrados.get(nome) ?? null;
+let filaRegistroComandos: Promise<void> = Promise.resolve();
 
 /** Cria ou atualiza (pelo nome) um comando de barra no servidor. Não mexe nos outros comandos. */
 export function upsertGuildCommand(body: MessageBody): Promise<boolean> {
   if (!botAtivo) return Promise.resolve(false);
-  return safe("registrar comando", async () => {
-    const res = await call("POST", `/applications/${env.DISCORD_CLIENT_ID}/guilds/${env.DISCORD_GUILD_ID}/commands`, body);
-    if (!res.ok) {
-      console.warn(`[bot] comando recusado (${res.status}): ${(await res.text()).slice(0, 300)}`);
-      return false;
-    }
-    const cmd = (await res.json().catch(() => null)) as { id?: string; name?: string } | null;
-    if (cmd?.id && cmd.name) comandosRegistrados.set(cmd.name, cmd.id);
-    return true;
-  }, false);
+  const tarefa = filaRegistroComandos.then(() =>
+    safe("registrar comando", async () => {
+      const res = await call("POST", `/applications/${env.DISCORD_CLIENT_ID}/guilds/${env.DISCORD_GUILD_ID}/commands`, body);
+      if (!res.ok) {
+        console.warn(`[bot] comando recusado (${res.status}): ${(await res.text()).slice(0, 300)}`);
+        return false;
+      }
+      const cmd = (await res.json().catch(() => null)) as { id?: string; name?: string } | null;
+      if (cmd?.id && cmd.name) comandosRegistrados.set(cmd.name, cmd.id);
+      return true;
+    }, false),
+  );
+  // A API do Discord aplica rate limit por rota; os registros eram iniciados todos juntos no boot.
+  filaRegistroComandos = tarefa.then(() => new Promise<void>((resolve) => setTimeout(resolve, 1_200)));
+  return tarefa;
 }
 
 export type ErroPermissaoComando = "sem_permissao_servidor" | "comando_nao_registrado" | "falha_discord";

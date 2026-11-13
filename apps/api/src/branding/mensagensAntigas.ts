@@ -49,7 +49,7 @@ export function reescrever(componentes: unknown[], anexos: MensagemCanal["attach
     const media = o.media as { url?: string } | undefined;
     if (media && typeof media.url === "string") {
       const nome = nomeNaUrl(media.url);
-      if (LOGO_ARQUIVO.test(nome)) {
+      if (LOGO_ARQUIVO.test(nome) && porNome.has(nome)) {
         o.media = { url: `attachment://${nomeLogoNovo}` };
         mudou = true;
       } else if (porNome.has(nome)) {
