@@ -165,6 +165,8 @@ app.all("/api/*", (c) => c.json({ error: "nao_encontrado" }, 404));
 /* ---------- Produção: a própria API serve o front (mesma origem) ---------- */
 
 if (isProd) {
+  // O build da API fica em apps/api/dist/src/index.js; o site compilado fica
+  // em apps/web/dist. Em produção ambos são empacotados na mesma app Discloud.
   const distDir = fileURLToPath(new URL("../../web/dist/", import.meta.url));
   if (existsSync(distDir)) {
     const indexHtml = readFileSync(`${distDir}index.html`, "utf8");
