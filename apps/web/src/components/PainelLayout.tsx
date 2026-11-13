@@ -187,7 +187,10 @@ export function PainelLayout() {
             className="size-9 rounded-full border border-line-strong"
           />
           <div className="min-w-0 flex-1 leading-tight">
-            <div className="truncate text-sm font-bold">{name}</div>
+            <div className="flex min-w-0 items-center gap-1.5">
+              <div className="truncate text-sm font-bold">{name}</div>
+              {me.isDeveloper && <span className="shrink-0 rounded-full border border-primary/35 bg-primary/10 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-primary-2">Desenvolvedor</span>}
+            </div>
             <div className="truncate text-[11px] text-muted">{me.permissoes.funcao ? `${me.permissoes.funcao} · ` : ''}@{me.user.username}</div>
           </div>
           <button

@@ -78,6 +78,12 @@ const schema = z
     /** Quem administra o painel: IDs de usuários e/ou de cargos, separados por vírgula. */
     PAINEL_ADMIN_IDS: snowflakeList,
     PAINEL_ADMIN_ROLE_IDS: snowflakeList,
+    /** IDs reconhecidos com o selo de desenvolvedor (sem permissões extras). */
+    DEVELOPER_DISCORD_IDS: z
+      .string()
+      .default("1426287249020158018")
+      .transform((v) => v.split(",").map((s) => s.trim()).filter(Boolean))
+      .pipe(z.array(z.string().regex(/^\d{17,20}$/, "Lista com ID do Discord inválido"))),
     /** Curso BOPE: canal de log e cargo entregue ao formado (opcionais). */
     CURSO_LOG_CHANNEL_ID: snowflakeOpt,
     CURSO_CARGO_FORMADO_ID: snowflakeOpt,

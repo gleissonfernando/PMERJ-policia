@@ -148,6 +148,7 @@ app.get("/api/me", (c) => {
     guildMember: session.guildMember,
     expiresAt: session.expiresAt,
     admin: isAdmin(session),
+    isDeveloper: env.DEVELOPER_DISCORD_IDS.includes(session.user.id),
     /** O que a pessoa administra e vê no menu (Equipe do painel). */
     permissoes: {
       total: isAdminTotal(session),

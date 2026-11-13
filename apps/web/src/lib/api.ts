@@ -64,6 +64,8 @@ export interface Me {
   expiresAt: number
   /** Pode mexer nas configurações do painel. */
   admin: boolean
+  /** Selo de desenvolvedor; não concede permissões administrativas. */
+  isDeveloper: boolean
   /** Equipe do painel: o que a pessoa administra e vê. */
   permissoes: {
     total: boolean
