@@ -111,6 +111,33 @@
     text-transform: uppercase;
   }
 
+  /* O vídeo de entrada cobre todo o palco, independentemente da proporção da tela. */
+  .cine-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .cine-escuro,
+  .cine-veu {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .cine-escuro {
+    background: linear-gradient(180deg, rgb(0 0 0 / 20%), rgb(0 0 0 / 34%));
+  }
+
+  .cine-veu {
+    background:
+      radial-gradient(ellipse at center, transparent 30%, rgb(0 0 0 / 42%) 100%),
+      linear-gradient(90deg, rgb(0 0 0 / 16%), transparent 24% 76%, rgb(0 0 0 / 16%));
+  }
+
   .kicker {
     color: var(--color-primary);
     font-size: 0.68rem;
