@@ -1,0 +1,31 @@
+{
+  "name": "pmerj",
+  "private": true,
+  "version": "0.1.0",
+  "description": "PMERJ — Dashboard integrada ao Discord",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev -w web",
+    "build:web": "npm run build -w web",
+    "lint": "npm run lint -w web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "dev:api": "npm run dev -w api",
+    "build": "npm run build -w web && npm run build -w api",
+    "start": "concurrently -n api,web -c red,blue --restart-tries 0 \"npm run dev -w api\" \"npm run dev -w web\"",
+    "dev": "npm start",
+    "start:prod": "npm run start -w api",
+    "discloud:zip": "node scripts/discloud-zip.mjs",
+    "discloud:deploy": "node scripts/discloud-deploy.mjs",
+    "discloud": "npm run build && npm run discloud:zip && npm run discloud:deploy"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.7",
+    "discloud.app": "^2.0.4"
+  }
+}

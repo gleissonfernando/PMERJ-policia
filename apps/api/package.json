@@ -1,0 +1,27 @@
+{
+  "name": "api",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch-path=src --watch-path=.env --env-file-if-exists=.env --import tsx src/main.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node --env-file-if-exists=.env dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "prestart": "node -e \"require('fs').existsSync('dist/main.js')||(console.error('\\n[PMERJ] Build não encontrado. Rode: npm run build  (ou use npm run dev:api / dev:web para testar localmente)\\n'),process.exit(1))\""
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.6",
+    "arctic": "^3.7.0",
+    "discord.js": "^14.28.1",
+    "ffmpeg-static": "^5.3.0",
+    "hono": "^4.13.17",
+    "mongodb": "^7.8.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

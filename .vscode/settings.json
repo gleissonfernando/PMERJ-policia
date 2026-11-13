@@ -1,0 +1,10 @@
+{
+  // O projeto é 100% TypeScript (sem .js próprio). Desliga a checagem de JavaScript para o
+  // VS Code não acusar "erros" em arquivos de bibliotecas abertas da node_modules (ex.: Vite).
+  "javascript.validate.enable": false,
+  // Arquivos de bibliotecas abrem só para leitura (evita editar a node_modules sem querer).
+  "files.readonlyInclude": {
+    "**/node_modules/**": true
+  },
+  "js/ts.tsdk.path": "node_modules\\typescript"
+}

@@ -1,0 +1,16 @@
+# Só vai para a Discloud o código já compilado. Os dados ficam no MongoDB (MONGODB_URI),
+# então apps/api/data, .env e node_modules NUNCA entram no pacote.
+*
+!discloud.config
+!package.json
+!package-lock.json
+!scripts
+!scripts/**
+!apps/api/package.json
+!apps/api/dist
+!apps/api/dist/**
+!apps/api/assets
+!apps/api/assets/**
+!apps/web/package.json
+!apps/web/dist
+!apps/web/dist/**
